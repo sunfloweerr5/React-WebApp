@@ -16,7 +16,7 @@ function HomePage() {
     setTodos((prevTodos) => [...prevTodos, task]); //เพิ่มงานใหม่ลงใน array ของ todos และคัดลอกงานเก่าๆ ไว้ด้วย
     await delay(); //ขอให้ฟังก์ชั่น delay ทำงานเสร็จก่อน
     setLoading(false); //ตั้งสถานะโหลดเป็น false
-    toast("Successfully Added task!");
+    toast.success("Successfully Added task!");
   };
 
   const deleteTask = async (id) => {
