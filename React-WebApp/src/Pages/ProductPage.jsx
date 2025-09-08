@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductItem from "../Components/ProductItem";
 import { toast } from "react-toastify";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import NewProduct from "../Components/NewProduct";
 
 function ProductPage() {
   const [products, setProducts] = useState([]);
@@ -21,6 +22,61 @@ function ProductPage() {
     fetchProducts();
   }, []);
   console.log(products);
+    const addProduct = async (product) => {
+    try {
+      const response = await fetch(
+        `${PathAPI}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product),
+        }
+      );
+      const newProduct = await response.json();
+      setProducts((prevProducts) => [...prevProducts, newProduct]);
+      toast.success("Product added successfully!", { autoClose: 2000 });
+    } catch (error) {
+      toast.error("Failed to add product!", { autoClose: 2000 });
+    }
+  };
+  const updateProduct = async (updatedProduct, id) => {
+    try {
+      const { pro_id } = products[id];
+      const response = await fetch(
+        `${PathAPI}/${pro_id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedProduct),
+        }
+      );
+      const updated = await response.json();
+      setProducts((prevProducts) =>
+        prevProducts.map((p, index) => (index === id ? updated : p))
+      );
+      toast.info("Product updated successfully!", { autoClose: 2000 });
+    } catch (error) {
+      toast.error("Failed to update product!", { autoClose: 2000 });
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      const { pro_id } = products[id];
+      await fetch(
+        `${PathAPI}/${pro_id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      setProducts((prevProducts) =>
+        prevProducts.filter((_, index) => index !== id)
+      );
+      toast.error("Product deleted successfully!", { autoClose: 2000 });
+    } catch (error) {
+      toast.error("Failed to delete product!", { autoClose: 2000 });
+    }
+  };
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -40,13 +96,13 @@ function ProductPage() {
           onChange={handleSearch}
           className="w-full p-2 border rounded bg-white"
         />
-  
+        
       </div>
-
+      <NewProduct addProduct={addProduct} />
       {filteredProducts.length > 0 ? (
         <table className="min-w-full mt-6 border-collapse">
-          <thead className="bg-gray-300">
-            <tr className="bg-gray-200">
+          <thead className="bg-pink-400">
+            <tr className="bg-pink-500">
               <th className="px-4 py-2">#</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Description</th>
@@ -57,7 +113,7 @@ function ProductPage() {
           </thead>
           <tbody>
             {filteredProducts.map((product, index) => (
-              <ProductItem key={index} id={index} product={product} />
+              <ProductItem key={index} id={index} product={product} updateProduct={updateProduct} deleteProduct={deleteProduct}/>
             ))}
           </tbody>
         </table>
@@ -71,4 +127,3 @@ function ProductPage() {
 }
 
 export default ProductPage;
-
