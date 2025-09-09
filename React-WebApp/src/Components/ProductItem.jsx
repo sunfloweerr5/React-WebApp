@@ -10,6 +10,7 @@ const ProductItem = ({ product, id, updateProduct, deleteProduct }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
   const dialog = useRef();
 
+
   useEffect(() => {
     setEditedProduct({ ...product });
   }, [product]);
