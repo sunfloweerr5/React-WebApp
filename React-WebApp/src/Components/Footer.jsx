@@ -5,5 +5,5 @@ function Footer() {
     <footer> &#169; {`${new Date().getFullYear()} - React Developer`}</footer>
   )
 }
-
+//jijij
 export default Footer
